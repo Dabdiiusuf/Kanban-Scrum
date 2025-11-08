@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-type Status = "Backlog" | "Doing" | "Done";
+type Status = "todo" | "doing" | "done";
 
 type ScrumItem = {
   id: string;

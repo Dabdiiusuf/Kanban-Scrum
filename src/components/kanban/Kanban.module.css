@@ -51,6 +51,12 @@
   border-radius: 12px;
   border: none;
   cursor: pointer;
+  transition-duration: 200ms;
+}
+
+.add:hover {
+  padding: 7px 23px;
+  background-color: rgb(78, 13, 78);
 }
 
 .addInput {
@@ -80,6 +86,13 @@
 .checkIcon {
   font-size: 30px;
   cursor: pointer;
+  transition-duration: 200ms;
+}
+
+.trashIcon:hover,
+.checkIcon:hover {
+  font-size: 33px;
+  color: rgb(255, 141, 255);
 }
 
 .icons {
