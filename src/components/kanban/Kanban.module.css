@@ -16,7 +16,8 @@
 
 .col1,
 .col2,
-.col3 {
+.col3,
+.col4 {
   height: 100%;
   width: 33%;
   display: flex;
