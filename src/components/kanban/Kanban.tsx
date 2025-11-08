@@ -2,6 +2,7 @@ import styles from "./Kanban.module.css";
 import { useState, useRef } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
+  moveTodo,
   addTodo,
   deleteTodo,
   completeTodo,
@@ -9,6 +10,7 @@ import {
 import { FaRegTrashAlt } from "react-icons/fa";
 // import { MdOutlineEdit } from "react-icons/md";
 import { FaRegCircleCheck } from "react-icons/fa6";
+import { FiPlusCircle } from "react-icons/fi";
 
 const Kanban = () => {
   const [inputValue, setInputValue] = useState("");
@@ -16,8 +18,10 @@ const Kanban = () => {
   const todo = useAppSelector((state) => state.todo.todos);
   const dispatch = useAppDispatch();
   const id = Date.now().toString();
+  const addedTodo = todo.filter((t) => t.status === "todo");
   const doing = todo.filter((t) => t.status === "doing");
   const done = todo.filter((t) => t.status === "done");
+  const count = todo.filter((t) => t.status === "doing").length;
 
   const handleAdd = () => {
     if (!inputValue.trim()) return;
@@ -53,9 +57,27 @@ const Kanban = () => {
               Add
             </button>
           </div>
+          <div className={styles.todo}>
+            {addedTodo.map((t, index) => (
+              <div key={index} className={styles.doing}>
+                <h3>{t.text}</h3>
+                <div className={styles.icons}>
+                  <FiPlusCircle
+                    className={styles.checkIcon}
+                    onClick={() => dispatch(moveTodo(t.id))}
+                  />
+                  {/* <MdOutlineEdit className="pen-icon" /> */}
+                  <FaRegTrashAlt
+                    className={styles.trashIcon}
+                    onClick={() => dispatch(deleteTodo(t.id))}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
         <div className={styles.col2}>
-          <h1 className={styles.title}>DOING</h1>
+          <h1 className={styles.title}>DOING {count}/3</h1>
           {doing.map((t, index) => (
             <div key={index} className={styles.doing}>
               <h3>{t.text}</h3>

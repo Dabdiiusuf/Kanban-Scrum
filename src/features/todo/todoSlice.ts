@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-type Status = "doing" | "done";
+type Status = "todo" | "doing" | "done";
 
 type TodoItem = {
   id: string;
@@ -22,12 +22,19 @@ const todoSlice = createSlice({
   initialState,
   reducers: {
     addTodo(state, action: PayloadAction<{ id: string; text: string }>) {
+      const { id, text } = action.payload;
+      state.todos.push({ id, text, status: "todo" });
+    },
+    moveTodo(state, action: PayloadAction<string>) {
       const doingLength = state.todos.filter(
         (t) => t.status === "doing"
       ).length;
       if (doingLength < 3) {
-        const { id, text } = action.payload;
-        state.todos.push({ id, text, status: "doing" });
+        const id = action.payload;
+        const todo = state.todos.find((t) => t.id === id);
+        if (todo && todo.status === "todo") {
+          todo.status = "doing";
+        }
       }
     },
     deleteTodo(state, action: PayloadAction<string>) {
@@ -44,5 +51,6 @@ const todoSlice = createSlice({
   },
 });
 
-export const { addTodo, deleteTodo, completeTodo } = todoSlice.actions;
+export const { moveTodo, addTodo, deleteTodo, completeTodo } =
+  todoSlice.actions;
 export default todoSlice.reducer;
