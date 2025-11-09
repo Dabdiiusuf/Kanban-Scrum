@@ -13,9 +13,9 @@ function App() {
   return (
     <div className="wrapper">
       <button className="togglebtn" onClick={handleToggle}>
-        <h3>{toggle ? "Kanban" : "Scrum"}</h3>
+        <h3>{toggle ? "Scrum" : "Kanban"}</h3>
       </button>
-      {toggle ? <Scrum /> : <Kanban />}
+      {toggle ? <Kanban /> : <Scrum />}
     </div>
   );
 }
