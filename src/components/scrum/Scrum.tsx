@@ -7,6 +7,12 @@ import {
   completeTodo,
   deleteTodo,
 } from "../../features/scrum/scrumSlice";
+import {
+  selectTodo,
+  selectReview,
+  selectDoing,
+  selectDone,
+} from "../../features/scrum/scrumSelectors";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { FiPlusCircle } from "react-icons/fi";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -16,11 +22,10 @@ const Scrum = () => {
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useAppDispatch();
-  const todos = useAppSelector((state) => state.scrum.todos);
-  const todo = todos.filter((t) => t.status === "todo");
-  const doing = todos.filter((t) => t.status === "doing");
-  const review = todos.filter((t) => t.status === "review");
-  const done = todos.filter((t) => t.status === "done");
+  const todo = useAppSelector(selectTodo);
+  const doing = useAppSelector(selectDoing);
+  const review = useAppSelector(selectReview);
+  const done = useAppSelector(selectDone);
   const id = Date.now().toString();
 
   const handleAdd = () => {
@@ -57,8 +62,8 @@ const Scrum = () => {
             </button>
           </div>
           <div className={styles.todo}>
-            {todo.map((t) => (
-              <div className={styles.doing}>
+            {todo.map((t, index) => (
+              <div key={index} className={styles.doing}>
                 <h3>{t.text}</h3>
                 <div className={styles.icons}>
                   <FiPlusCircle
@@ -76,8 +81,8 @@ const Scrum = () => {
         </div>
         <div className={styles.col2}>
           <h1 className={styles.title}>DOING</h1>
-          {doing.map((t) => (
-            <div className={styles.doing}>
+          {doing.map((t, index) => (
+            <div key={index} className={styles.doing}>
               <h3>{t.text}</h3>
               <div className={styles.icons}>
                 <FaRegCircleCheck
@@ -94,8 +99,8 @@ const Scrum = () => {
         </div>
         <div className={styles.col3}>
           <h1 className={styles.title}>REVIEW</h1>
-          {review.map((t) => (
-            <div className={styles.doing}>
+          {review.map((t, index) => (
+            <div key={index} className={styles.doing}>
               <h3>{t.text}</h3>
               <div className={styles.icons}>
                 <FaRegCircleCheck
@@ -112,8 +117,8 @@ const Scrum = () => {
         </div>
         <div className={styles.col4}>
           <h1 className={styles.title}>DONE</h1>
-          {done.map((t) => (
-            <div className={styles.doing}>
+          {done.map((t, index) => (
+            <div key={index} className={styles.doing}>
               <h3>{t.text}</h3>
               <div className={styles.icons}>
                 <FaRegTrashAlt

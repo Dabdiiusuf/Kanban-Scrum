@@ -7,6 +7,12 @@ import {
   deleteTodo,
   completeTodo,
 } from "../../features/todo/todoSlice";
+import {
+  selectTodo,
+  selectDoing,
+  selectDone,
+  selectDoingCount,
+} from "../../features/todo/todoSelectors";
 import { FaRegTrashAlt } from "react-icons/fa";
 // import { MdOutlineEdit } from "react-icons/md";
 import { FaRegCircleCheck } from "react-icons/fa6";
@@ -15,13 +21,12 @@ import { FiPlusCircle } from "react-icons/fi";
 const Kanban = () => {
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const todo = useAppSelector((state) => state.todo.todos);
   const dispatch = useAppDispatch();
   const id = Date.now().toString();
-  const addedTodo = todo.filter((t) => t.status === "todo");
-  const doing = todo.filter((t) => t.status === "doing");
-  const done = todo.filter((t) => t.status === "done");
-  const count = todo.filter((t) => t.status === "doing").length;
+  const todo = useAppSelector(selectTodo);
+  const doing = useAppSelector(selectDoing);
+  const done = useAppSelector(selectDone);
+  const count = useAppSelector(selectDoingCount);
 
   const handleAdd = () => {
     if (!inputValue.trim()) return;
@@ -58,7 +63,7 @@ const Kanban = () => {
             </button>
           </div>
           <div className={styles.todo}>
-            {addedTodo.map((t, index) => (
+            {todo.map((t, index) => (
               <div key={index} className={styles.doing}>
                 <h3>{t.text}</h3>
                 <div className={styles.icons}>
