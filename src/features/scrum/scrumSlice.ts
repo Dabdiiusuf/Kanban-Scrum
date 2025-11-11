@@ -27,25 +27,28 @@ const scrumSlice = createSlice({
       const { id, text } = action.payload;
       state.todos.push({ id, text, status: "todo" });
     },
-    toDoing(state, action: PayloadAction<string>) {
+    moveTicket(state, action: PayloadAction<string>) {
       const id = action.payload;
       const todo = state.todos.find((t) => t.id === id);
       if (todo && todo.status === "todo") {
         todo.status = "doing";
+      } else if (todo && todo.status === "doing") {
+        todo.status = "review";
+      } else if (todo && todo.status === "review") {
+        todo.status = "done";
       }
     },
-    toReview(state, action: PayloadAction<string>) {
+    returnTodo(state, action: PayloadAction<string>) {
       const id = action.payload;
       const todo = state.todos.find((t) => t.id === id);
       if (todo && todo.status === "doing") {
-        todo.status = "review";
+        todo.status = "todo";
       }
-    },
-    completeTodo(state, action: PayloadAction<string>) {
-      const id = action.payload;
-      const todo = state.todos.find((t) => t.id === id);
       if (todo && todo.status === "review") {
-        todo.status = "done";
+        todo.status = "doing";
+      }
+      if (todo && todo.status === "done") {
+        todo.status = "review";
       }
     },
     deleteTodo(state, action: PayloadAction<string>) {
@@ -58,6 +61,6 @@ const scrumSlice = createSlice({
   },
 });
 
-export const { addTicket, toDoing, toReview, completeTodo, deleteTodo } =
+export const { addTicket, moveTicket, returnTodo, deleteTodo } =
   scrumSlice.actions;
 export default scrumSlice.reducer;

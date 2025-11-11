@@ -2,9 +2,8 @@ import styles from "./Scrum.module.css";
 import { useState, useRef } from "react";
 import {
   addTicket,
-  toDoing,
-  toReview,
-  completeTodo,
+  moveTicket,
+  returnTodo,
   deleteTodo,
 } from "../../features/scrum/scrumSlice";
 import {
@@ -17,6 +16,7 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { FiPlusCircle } from "react-icons/fi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FaRegCircleCheck } from "react-icons/fa6";
+import { IoMdReturnLeft } from "react-icons/io";
 
 const Scrum = () => {
   const [inputValue, setInputValue] = useState("");
@@ -68,7 +68,7 @@ const Scrum = () => {
                 <div className={styles.icons}>
                   <FiPlusCircle
                     className={styles.checkIcon}
-                    onClick={() => dispatch(toDoing(t.id))}
+                    onClick={() => dispatch(moveTicket(t.id))}
                   />
                   <FaRegTrashAlt
                     className={styles.trashIcon}
@@ -87,7 +87,11 @@ const Scrum = () => {
               <div className={styles.icons}>
                 <FaRegCircleCheck
                   className={styles.checkIcon}
-                  onClick={() => dispatch(toReview(t.id))}
+                  onClick={() => dispatch(moveTicket(t.id))}
+                />
+                <IoMdReturnLeft
+                  className={styles.checkIcon}
+                  onClick={() => dispatch(returnTodo(t.id))}
                 />
                 <FaRegTrashAlt
                   className={styles.trashIcon}
@@ -105,7 +109,11 @@ const Scrum = () => {
               <div className={styles.icons}>
                 <FaRegCircleCheck
                   className={styles.checkIcon}
-                  onClick={() => dispatch(completeTodo(t.id))}
+                  onClick={() => dispatch(moveTicket(t.id))}
+                />
+                <IoMdReturnLeft
+                  className={styles.checkIcon}
+                  onClick={() => dispatch(returnTodo(t.id))}
                 />
                 <FaRegTrashAlt
                   className={styles.trashIcon}
@@ -121,6 +129,10 @@ const Scrum = () => {
             <div key={index} className={styles.doing}>
               <h3>{t.text}</h3>
               <div className={styles.icons}>
+                <IoMdReturnLeft
+                  className={styles.checkIcon}
+                  onClick={() => dispatch(returnTodo(t.id))}
+                />
                 <FaRegTrashAlt
                   className={styles.trashIcon}
                   onClick={() => dispatch(deleteTodo(t.id))}
