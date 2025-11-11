@@ -3,8 +3,9 @@ import { useState, useRef } from "react";
 import {
   addTicket,
   moveTicket,
-  returnTodo,
-  deleteTodo,
+  returnTicket,
+  deleteTicket,
+  updateTicket,
 } from "../../features/scrum/scrumSlice";
 import {
   selectTodo,
@@ -17,9 +18,12 @@ import { FiPlusCircle } from "react-icons/fi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import { IoMdReturnLeft } from "react-icons/io";
+import { MdOutlineEdit } from "react-icons/md";
 
 const Scrum = () => {
   const [inputValue, setInputValue] = useState("");
+  const [updateValue, setUpdateValue] = useState("");
+  const [editId, setEditId] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useAppDispatch();
   const todo = useAppSelector(selectTodo);
@@ -35,6 +39,19 @@ const Scrum = () => {
     inputRef?.current?.focus();
   };
 
+  const startEdit = (id: string, currentText: string) => {
+    setEditId(id);
+    setUpdateValue(currentText);
+  };
+
+  const handleUpdate = () => {
+    if (!editId) return;
+    if (!updateValue.trim()) return;
+    dispatch(updateTicket({ id: editId, newText: updateValue }));
+    setEditId(null);
+    setUpdateValue("");
+  };
+
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleAdd();
@@ -46,7 +63,7 @@ const Scrum = () => {
       <div className={styles.scrum}>Scrum</div>
       <div className={styles.container}>
         <div className={styles.col1}>
-          <h1 className={styles.title}>TO-DO</h1>
+          <h1 className={styles.title}>Backlog</h1>
           <input
             type="text"
             className={styles.addInput}
@@ -64,17 +81,45 @@ const Scrum = () => {
           <div className={styles.todo}>
             {todo.map((t, index) => (
               <div key={index} className={styles.doing}>
-                <h3>{t.text}</h3>
-                <div className={styles.icons}>
-                  <FiPlusCircle
-                    className={styles.checkIcon}
-                    onClick={() => dispatch(moveTicket(t.id))}
-                  />
-                  <FaRegTrashAlt
-                    className={styles.trashIcon}
-                    onClick={() => dispatch(deleteTodo(t.id))}
-                  />
-                </div>
+                {t.id === editId ? (
+                  <div className={styles.ticketWrapper}>
+                    <input
+                      type="text"
+                      className={styles.addInput}
+                      placeholder="Edit your to-do"
+                      value={updateValue}
+                      onChange={(e) => setUpdateValue(e.target.value)}
+                    />
+                    <div className={styles.icons}>
+                      <FaRegCircleCheck
+                        className={styles.checkIcon}
+                        onClick={handleUpdate}
+                      />
+                      <FaRegTrashAlt
+                        className={styles.trashIcon}
+                        onClick={() => dispatch(deleteTicket(t.id))}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.ticketWrapper}>
+                    <h3>{t.text}</h3>
+                    <div className={styles.icons}>
+                      <FiPlusCircle
+                        className={styles.checkIcon}
+                        onClick={() => dispatch(moveTicket(t.id))}
+                      />
+                      <MdOutlineEdit
+                        className={styles.checkIcon}
+                        onClick={() => startEdit(t.id, t.text)}
+                      />
+                      <FaRegTrashAlt
+                        className={styles.trashIcon}
+                        onClick={() => dispatch(deleteTicket(t.id))}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -91,11 +136,11 @@ const Scrum = () => {
                 />
                 <IoMdReturnLeft
                   className={styles.checkIcon}
-                  onClick={() => dispatch(returnTodo(t.id))}
+                  onClick={() => dispatch(returnTicket(t.id))}
                 />
                 <FaRegTrashAlt
                   className={styles.trashIcon}
-                  onClick={() => dispatch(deleteTodo(t.id))}
+                  onClick={() => dispatch(deleteTicket(t.id))}
                 />
               </div>
             </div>
@@ -113,11 +158,11 @@ const Scrum = () => {
                 />
                 <IoMdReturnLeft
                   className={styles.checkIcon}
-                  onClick={() => dispatch(returnTodo(t.id))}
+                  onClick={() => dispatch(returnTicket(t.id))}
                 />
                 <FaRegTrashAlt
                   className={styles.trashIcon}
-                  onClick={() => dispatch(deleteTodo(t.id))}
+                  onClick={() => dispatch(deleteTicket(t.id))}
                 />
               </div>
             </div>
@@ -131,11 +176,11 @@ const Scrum = () => {
               <div className={styles.icons}>
                 <IoMdReturnLeft
                   className={styles.checkIcon}
-                  onClick={() => dispatch(returnTodo(t.id))}
+                  onClick={() => dispatch(returnTicket(t.id))}
                 />
                 <FaRegTrashAlt
                   className={styles.trashIcon}
-                  onClick={() => dispatch(deleteTodo(t.id))}
+                  onClick={() => dispatch(deleteTicket(t.id))}
                 />
               </div>
             </div>

@@ -6,6 +6,7 @@ type Status = "todo" | "doing" | "review" | "done";
 type ScrumItem = {
   id: string;
   text: string;
+  newText?: string;
   status: Status;
 };
 
@@ -38,7 +39,7 @@ const scrumSlice = createSlice({
         todo.status = "done";
       }
     },
-    returnTodo(state, action: PayloadAction<string>) {
+    returnTicket(state, action: PayloadAction<string>) {
       const id = action.payload;
       const todo = state.todos.find((t) => t.id === id);
       if (todo && todo.status === "doing") {
@@ -51,9 +52,19 @@ const scrumSlice = createSlice({
         todo.status = "review";
       }
     },
-    deleteTodo(state, action: PayloadAction<string>) {
+    deleteTicket(state, action: PayloadAction<string>) {
       const id = action.payload;
       state.todos = state.todos.filter((d) => d.id !== id);
+    },
+    updateTicket(
+      state,
+      action: PayloadAction<{ id: string; newText: string }>
+    ) {
+      const { id, newText } = action.payload;
+      const ticket = state.todos.find((t) => t.id === id);
+      if (ticket) {
+        ticket.text = newText;
+      }
     },
   },
   extraReducers(builder) {
@@ -61,6 +72,11 @@ const scrumSlice = createSlice({
   },
 });
 
-export const { addTicket, moveTicket, returnTodo, deleteTodo } =
-  scrumSlice.actions;
+export const {
+  addTicket,
+  moveTicket,
+  returnTicket,
+  deleteTicket,
+  updateTicket,
+} = scrumSlice.actions;
 export default scrumSlice.reducer;
