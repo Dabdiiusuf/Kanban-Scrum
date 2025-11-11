@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAction, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 type Status = "todo" | "doing" | "review" | "done";
@@ -16,6 +16,8 @@ type ScrumState = {
 const initialState: ScrumState = {
   todos: [],
 };
+
+export const resetScrum = createAction("scrum/reset");
 
 const scrumSlice = createSlice({
   name: "scrum",
@@ -50,6 +52,9 @@ const scrumSlice = createSlice({
       const id = action.payload;
       state.todos = state.todos.filter((d) => d.id !== id);
     },
+  },
+  extraReducers(builder) {
+    builder.addCase(resetScrum, () => initialState);
   },
 });
 
