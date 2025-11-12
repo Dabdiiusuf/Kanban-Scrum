@@ -1,21 +1,18 @@
 import "./index.css";
-import { useState } from "react";
-import Kanban from "./components/kanban/Kanban";
-import Scrum from "./components/scrum/Scrum";
+import Register from "./components/register/Register";
+import Login from "./components/login/Login";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Toggle from "./components/toggle/toggle";
 
 function App() {
-  const [toggle, setToggle] = useState(false);
-
-  const handleToggle = () => {
-    setToggle((prev) => !prev);
-  };
-
   return (
     <div className="wrapper">
-      <button className="togglebtn" onClick={handleToggle}>
-        <h3>{toggle ? "Scrum" : "Kanban"}</h3>
-      </button>
-      {toggle ? <Kanban /> : <Scrum />}
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/toggle" element={<Toggle />} />
+      </Routes>
     </div>
   );
 }
