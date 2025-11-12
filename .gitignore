@@ -31,3 +31,5 @@ yarn-error.log*
 
 # Coverage and testing
 coverage/
+
+server/scrumboard-f0041-firebase-adminsdk-fbsvc-fd2669de65.json
