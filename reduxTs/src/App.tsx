@@ -2,8 +2,10 @@ import "./index.css";
 import Register from "./components/register/Register";
 import Login from "./components/login/Login";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Toggle from "./components/toggle/Toggle";
+// import Toggle from "./components/toggle/Toggle";
 import Boards from "./components/boards/Boards";
+import Kanban from "./components/kanban/Kanban";
+import Scrum from "./components/scrum/Scrum";
 
 function App() {
   return (
@@ -13,7 +15,9 @@ function App() {
         <Route path="/boards" element={<Boards />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/toggle" element={<Toggle />} />
+        <Route path="/kanban" element={<Kanban />} />
+        <Route path="/scrum" element={<Scrum />} />
+        {/* <Route path="/toggle" element={<Toggle />} /> */}
       </Routes>
     </div>
   );
