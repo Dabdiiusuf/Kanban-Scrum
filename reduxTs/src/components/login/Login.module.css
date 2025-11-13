@@ -47,7 +47,7 @@ input {
   height: 33%;
 }
 
-.username,
+.email,
 .password {
   display: flex;
   flex-direction: column;
@@ -85,4 +85,31 @@ input {
   background-color: transparent;
   color: rgb(49, 49, 135);
   cursor: pointer;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  width: 100vw;
+  min-height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  position: absolute;
+}
+
+.loadingBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  width: 300px;
+  height: 150px;
+  background-color: rgb(57, 62, 71);
+  border-radius: 12px;
+  position: fixed;
+  color: white;
 }
