@@ -35,7 +35,7 @@ export const createTicket = createAsyncThunk(
       body: JSON.stringify(ticket),
     });
     if (!res.ok) throw new Error("Failed to create ticket");
-    return res.json;
+    return res.json();
   }
 );
 
@@ -65,6 +65,40 @@ const todoSlice = createSlice({
   name: "todo",
   initialState,
   reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchTickets.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchTickets.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message ?? "Failed to fetch tickets";
+    });
+    builder.addCase(fetchTickets.fulfilled, (state, action) => {
+      state.loading = false;
+      state.items = action.payload;
+      state.error = null;
+    });
+    builder.addCase(createTicket.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.items.push(action.payload);
+    });
+    builder.addCase(updateTicket.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      const ticket = state.items.find((t) => t.id === action.payload.id);
+      if (ticket) {
+        ticket.text = action.payload.text;
+        ticket.status = action.payload.status;
+      }
+    });
+    builder.addCase(deleteTicket.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.items = state.items.filter((t) => t.id !== action.payload);
+    });
+  },
 });
 
 export default todoSlice.reducer;
