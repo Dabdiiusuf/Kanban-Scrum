@@ -14,6 +14,7 @@ import {
   selectDone,
 } from "../../features/scrum/scrumSelectors";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useNavigate } from "react-router-dom";
 import { FiPlusCircle } from "react-icons/fi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FaRegCircleCheck } from "react-icons/fa6";
@@ -25,6 +26,7 @@ const Scrum = () => {
   const [updateValue, setUpdateValue] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const todo = useAppSelector(selectTodo);
   const doing = useAppSelector(selectDoing);
@@ -58,9 +60,16 @@ const Scrum = () => {
     }
   };
 
+  const handleBoardChange = () => {
+    navigate("/kanban");
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.scrum}>Scrum</div>
+      <button className={styles.toggleBtn} onClick={handleBoardChange}>
+        Kanban
+      </button>
       <div className={styles.container}>
         <div className={styles.col1}>
           <h1 className={styles.title}>Backlog</h1>

@@ -1,5 +1,5 @@
 import styles from "./Kanban.module.css";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import {
   fetchTickets,
   createTicket,
@@ -8,6 +8,7 @@ import {
   moveTicket,
 } from "../../features/todo/todoSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useNavigate } from "react-router-dom";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import { MdOutlineEdit } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -16,17 +17,21 @@ import { FiPlusCircle } from "react-icons/fi";
 const Kanban = () => {
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  // const kanbanTickets = useAppSelector((state) => state.todo.items);
-  const todo = useAppSelector((state) => {
-    return state.todo.items.filter((t) => t.status === "todo");
-  });
-  const doing = useAppSelector((state) =>
-    state.todo.items.filter((t) => t.status === "doing")
-  );
-  const done = useAppSelector((state) =>
-    state.todo.items.filter((t) => t.status === "done")
-  );
+  const items = useAppSelector((state) => state.todo.items);
+
+  const todo = useMemo(() => {
+    return items.filter((t) => t.status === "todo");
+  }, [items]);
+
+  const doing = useMemo(() => {
+    return items.filter((t) => t.status === "doing");
+  }, [items]);
+
+  const done = useMemo(() => {
+    return items.filter((t) => t.status === "done");
+  }, [items]);
 
   useEffect(() => {
     dispatch(fetchTickets());
@@ -41,9 +46,16 @@ const Kanban = () => {
     dispatch(deleteTicket(id));
   };
 
+  const handleBoardChange = () => {
+    navigate("/scrum");
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.kanban}>Kanban</div>
+      <button className={styles.toggleBtn} onClick={handleBoardChange}>
+        Scrum
+      </button>
       <div className={styles.container}>
         <div className={styles.col1}>
           <h1 className={styles.title}>TO-DO</h1>
@@ -107,7 +119,6 @@ const Kanban = () => {
               <div key={index} className={styles.doing}>
                 <h3>{t.text}</h3>
                 <div className={styles.icons}>
-                  <MdOutlineEdit className={styles.icon} />
                   <FaRegTrashAlt
                     className={styles.icon}
                     onClick={() => handleDelete(t.id)}
