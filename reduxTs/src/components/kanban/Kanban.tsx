@@ -14,6 +14,12 @@ import { FaRegCircleCheck } from "react-icons/fa6";
 import { MdOutlineEdit } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FiPlusCircle } from "react-icons/fi";
+import {
+  selectTodo,
+  selectDoing,
+  selectDone,
+  selectCount,
+} from "../../features/todo/todoSelectors";
 
 const Kanban = () => {
   const [inputValue, setInputValue] = useState("");
@@ -22,23 +28,10 @@ const Kanban = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const items = useAppSelector((state) => state.todo.items);
-
-  const todo = useMemo(() => {
-    return items.filter((t) => t.status === "todo");
-  }, [items]);
-
-  const doing = useMemo(() => {
-    return items.filter((t) => t.status === "doing");
-  }, [items]);
-
-  const done = useMemo(() => {
-    return items.filter((t) => t.status === "done");
-  }, [items]);
-
-  const count = useAppSelector(
-    (state) => state.todo.items.filter((t) => t.status === "doing").length
-  );
+  const todo = useAppSelector(selectTodo);
+  const doing = useAppSelector(selectDoing);
+  const done = useAppSelector(selectDone);
+  const count = useAppSelector(selectCount);
 
   useEffect(() => {
     dispatch(fetchTickets());
