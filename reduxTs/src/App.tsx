@@ -2,7 +2,6 @@ import "./index.css";
 import Register from "./components/register/Register";
 import Login from "./components/login/Login";
 import { Routes, Route, Navigate } from "react-router-dom";
-// import Toggle from "./components/toggle/Toggle";
 import Boards from "./components/boards/Boards";
 import Kanban from "./components/kanban/Kanban";
 import Scrum from "./components/scrum/Scrum";
@@ -17,7 +16,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/kanban" element={<Kanban />} />
         <Route path="/scrum" element={<Scrum />} />
-        {/* <Route path="/toggle" element={<Toggle />} /> */}
       </Routes>
     </div>
   );

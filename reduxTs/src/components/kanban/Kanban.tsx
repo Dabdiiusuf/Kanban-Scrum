@@ -40,6 +40,7 @@ const Kanban = () => {
   const handleAdd = () => {
     dispatch(createTicket({ text: inputValue, status: "todo" }));
     setInputValue("");
+    inputRef?.current?.focus();
   };
 
   const handleDelete = (id: string) => {
@@ -48,6 +49,12 @@ const Kanban = () => {
 
   const handleBoardChange = () => {
     navigate("/scrum");
+  };
+
+  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleAdd();
+    }
   };
 
   return (
@@ -66,6 +73,7 @@ const Kanban = () => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             ref={inputRef}
+            onKeyDown={handleEnter}
           />
           <div className={styles.buttons}>
             <button className={styles.add} onClick={handleAdd}>
