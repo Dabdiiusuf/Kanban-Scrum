@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 type Status = "todo" | "doing" | "done";
 
@@ -66,7 +67,17 @@ export const deleteTicket = createAsyncThunk(
 const todoSlice = createSlice({
   name: "todo",
   initialState,
-  reducers: {},
+  reducers: {
+    moveTicket(state, action: PayloadAction<string>) {
+      const id = action.payload;
+      const ticket = state.items.find((t) => t.id === id);
+      if (ticket && ticket.status === "todo") {
+        ticket.status = "doing";
+      } else if (ticket && ticket.status === "doing") {
+        ticket.status = "done";
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchTickets.pending, (state) => {
       state.loading = true;
@@ -103,4 +114,5 @@ const todoSlice = createSlice({
   },
 });
 
+export const { moveTicket } = todoSlice.actions;
 export default todoSlice.reducer;

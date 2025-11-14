@@ -5,12 +5,13 @@ import {
   createTicket,
   updateTicket,
   deleteTicket,
+  moveTicket,
 } from "../../features/todo/todoSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import { MdOutlineEdit } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
-// import { FiPlusCircle } from "react-icons/fi";
+import { FiPlusCircle } from "react-icons/fi";
 
 const Kanban = () => {
   const [inputValue, setInputValue] = useState("");
@@ -20,6 +21,12 @@ const Kanban = () => {
   const todo = useAppSelector((state) => {
     return state.todo.items.filter((t) => t.status === "todo");
   });
+  const doing = useAppSelector((state) =>
+    state.todo.items.filter((t) => t.status === "doing")
+  );
+  const done = useAppSelector((state) =>
+    state.todo.items.filter((t) => t.status === "done")
+  );
 
   useEffect(() => {
     dispatch(fetchTickets());
@@ -58,7 +65,10 @@ const Kanban = () => {
               <div key={index} className={styles.doing}>
                 <h3>{t.text}</h3>
                 <div className={styles.icons}>
-                  <FaRegCircleCheck className={styles.icon} />
+                  <FiPlusCircle
+                    className={styles.icon}
+                    onClick={() => dispatch(moveTicket(t.id))}
+                  />
                   <MdOutlineEdit className={styles.icon} />
                   <FaRegTrashAlt
                     className={styles.icon}
@@ -71,9 +81,41 @@ const Kanban = () => {
         </div>
         <div className={styles.col2}>
           <h1 className={styles.title}>DOING .../3</h1>
+          <div className={styles.todo}>
+            {doing.map((t, index) => (
+              <div key={index} className={styles.doing}>
+                <h3>{t.text}</h3>
+                <div className={styles.icons}>
+                  <FaRegCircleCheck
+                    className={styles.icon}
+                    onClick={() => dispatch(moveTicket(t.id))}
+                  />
+                  <MdOutlineEdit className={styles.icon} />
+                  <FaRegTrashAlt
+                    className={styles.icon}
+                    onClick={() => handleDelete(t.id)}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
         <div className={styles.col3}>
           <h1 className={styles.title}>DONE</h1>
+          <div className={styles.todo}>
+            {done.map((t, index) => (
+              <div key={index} className={styles.doing}>
+                <h3>{t.text}</h3>
+                <div className={styles.icons}>
+                  <MdOutlineEdit className={styles.icon} />
+                  <FaRegTrashAlt
+                    className={styles.icon}
+                    onClick={() => handleDelete(t.id)}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
