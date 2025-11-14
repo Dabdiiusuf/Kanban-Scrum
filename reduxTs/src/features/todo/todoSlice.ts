@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-type Status = "todo" | "doing" | "done";
+export type Status = "todo" | "doing" | "done";
 
 type TodoItem = {
   id: string;
@@ -43,7 +43,7 @@ export const createTicket = createAsyncThunk(
 export const updateTicket = createAsyncThunk(
   "tickets/update",
   async (ticket: TodoItem) => {
-    const res = await fetch(`/api/tickets/${ticket.id}`, {
+    const res = await fetch(`http://localhost:5000/api/tickets/${ticket.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(ticket),

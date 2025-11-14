@@ -67,7 +67,18 @@
   padding-left: 5px;
   outline: none;
   border: none;
-  margin-top: 8px;
+  margin-top: 20px;
+  background-color: white;
+}
+
+.editInput {
+  width: 80%;
+  height: 35px;
+  border-radius: 12px;
+  padding-left: 5px;
+  outline: none;
+  border: none;
+  background-color: white;
 }
 
 .doing,
@@ -133,4 +144,12 @@
   height: 73px;
   width: 73px;
   background-color: rgb(78, 13, 78);
+}
+
+.ticketWrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
