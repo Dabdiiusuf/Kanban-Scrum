@@ -20,7 +20,7 @@ const initialState: TodoState = {
   error: null,
 };
 
-export const fetchTickets = createAsyncThunk("tickets/id", async () => {
+export const fetchTickets = createAsyncThunk("tickets/fetch", async () => {
   const res = await fetch("/api/tickets");
   if (!res.ok) throw new Error("Failed to fetch tickets");
   return res.json();
@@ -29,7 +29,7 @@ export const fetchTickets = createAsyncThunk("tickets/id", async () => {
 export const createTicket = createAsyncThunk(
   "tickets/create",
   async (ticket: Omit<TodoItem, "id">) => {
-    const res = await fetch("/api/tickets", {
+    const res = await fetch("http://localhost:5000/api/tickets", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(ticket),
@@ -43,7 +43,7 @@ export const updateTicket = createAsyncThunk(
   "tickets/update",
   async (ticket: TodoItem) => {
     const res = await fetch(`/api/tickets/${ticket.id}`, {
-      method: "Patch",
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(ticket),
     });
@@ -55,7 +55,9 @@ export const updateTicket = createAsyncThunk(
 export const deleteTicket = createAsyncThunk(
   "tickets/delete",
   async (id: string) => {
-    const res = await fetch(`/api/tickets/${id}`, { method: "Delete" });
+    const res = await fetch(`http://localhost:5000/api/tickets/${id}`, {
+      method: "DELETE",
+    });
     if (!res.ok) throw new Error("Failed to delete ticket");
     return id;
   }

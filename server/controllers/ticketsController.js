@@ -1,4 +1,4 @@
-const { db, admin } = require("../firebase");
+const db = require("../firebase");
 
 exports.getTickets = async (req, res) => {
   try {
@@ -15,18 +15,23 @@ exports.getTickets = async (req, res) => {
 
 exports.createTicket = async (req, res) => {
   try {
-    const { task, status } = req.body;
-    if (!task) return res.status(400).json({ error: "Task is required" });
+    const { text, status } = req.body;
+    console.log("POST /api/tickets body:", req.body);
+    const cleanText = (text ?? "").trim();
+    if (!cleanText) return res.status(400).json({ error: "text is required" });
 
     const newticket = {
-      task,
-      status: status || TransformStreamDefaultController,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      text: cleanText,
+      status: status || "todo",
+      createdAt: Date.now(),
     };
 
-    const docRef = await db.collection("tickets").add(newticket);
-    const doc = await docRef.get();
+    const ref = await db.collection("tickets").add(newticket);
+    const snap = await ref.get();
+    return res.status(201).json({ id: ref.id, ...snap.data() });
   } catch (err) {
+    console.error(err.stack);
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 };

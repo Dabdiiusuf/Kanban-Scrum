@@ -8,5 +8,5 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
-
+console.log("[firebase] db type ok?", typeof db?.collection === "function");
 module.exports = db;
