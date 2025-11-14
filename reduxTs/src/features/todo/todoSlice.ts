@@ -71,7 +71,10 @@ const todoSlice = createSlice({
     moveTicket(state, action: PayloadAction<string>) {
       const id = action.payload;
       const ticket = state.items.find((t) => t.id === id);
-      if (ticket && ticket.status === "todo") {
+      const doingLength = state.items.filter(
+        (t) => t.status === "doing"
+      ).length;
+      if (ticket && ticket.status === "todo" && doingLength <= 2) {
         ticket.status = "doing";
       } else if (ticket && ticket.status === "doing") {
         ticket.status = "done";

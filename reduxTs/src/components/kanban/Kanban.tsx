@@ -36,6 +36,10 @@ const Kanban = () => {
     return items.filter((t) => t.status === "done");
   }, [items]);
 
+  const count = useAppSelector(
+    (state) => state.todo.items.filter((t) => t.status === "doing").length
+  );
+
   useEffect(() => {
     dispatch(fetchTickets());
   }, []);
@@ -142,7 +146,7 @@ const Kanban = () => {
         </div>
         {/* FIRST COLUMN END*/}
         <div className={styles.col2}>
-          <h1 className={styles.title}>DOING .../3</h1>
+          <h1 className={styles.title}>DOING {count}/3</h1>
           <div className={styles.todo}>
             {doing.map((t, index) => (
               <div key={index} className={styles.doing}>
