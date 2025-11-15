@@ -1,5 +1,5 @@
 import styles from "./Kanban.module.css";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   fetchTickets,
   createTicket,
@@ -32,6 +32,7 @@ const Kanban = () => {
   const doing = useAppSelector(selectDoing);
   const done = useAppSelector(selectDone);
   const count = useAppSelector(selectCount);
+  const items = useAppSelector((state) => state.todo.items);
 
   useEffect(() => {
     dispatch(fetchTickets());
@@ -75,7 +76,23 @@ const Kanban = () => {
       </button>
       <div className={styles.container}>
         {/* FIRST COLUMN START*/}
-        <div className={styles.col1}>
+        <div
+          className={styles.col1}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const id = e.dataTransfer.getData("text/plain");
+            const ticket = items.find((t) => t.id === id);
+            if (!ticket) return;
+            dispatch(
+              updateTicket({
+                id: ticket.id,
+                text: ticket.text,
+                status: "todo",
+              })
+            );
+          }}
+        >
           <h1 className={styles.title}>TO-DO</h1>
           <input
             type="text"
@@ -93,7 +110,14 @@ const Kanban = () => {
           </div>
           <div className={styles.todo}>
             {todo.map((t, index) => (
-              <div key={index} className={styles.doing}>
+              <div
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("text/plain", t.id);
+                }}
+                key={index}
+                className={styles.doing}
+              >
                 {t.id === isEditing ? (
                   <div className={styles.ticketWrapper}>
                     <input
@@ -138,11 +162,34 @@ const Kanban = () => {
           </div>
         </div>
         {/* FIRST COLUMN END*/}
-        <div className={styles.col2}>
+        <div
+          className={styles.col2}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const id = e.dataTransfer.getData("text/plain");
+            const ticket = items.find((t) => t.id === id);
+            if (!ticket) return;
+            dispatch(
+              updateTicket({
+                id: ticket.id,
+                text: ticket.text,
+                status: "doing",
+              })
+            );
+          }}
+        >
           <h1 className={styles.title}>DOING {count}/3</h1>
           <div className={styles.todo}>
             {doing.map((t, index) => (
-              <div key={index} className={styles.doing}>
+              <div
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("text/plain", t.id);
+                }}
+                key={index}
+                className={styles.doing}
+              >
                 {t.id === isEditing ? (
                   <div className={styles.ticketWrapper}>
                     <input
@@ -186,11 +233,34 @@ const Kanban = () => {
             ))}
           </div>
         </div>
-        <div className={styles.col3}>
+        <div
+          className={styles.col3}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const id = e.dataTransfer.getData("text/plain");
+            const ticket = items.find((t) => t.id === id);
+            if (!ticket) return;
+            dispatch(
+              updateTicket({
+                id: ticket.id,
+                text: ticket.text,
+                status: "done",
+              })
+            );
+          }}
+        >
           <h1 className={styles.title}>DONE</h1>
           <div className={styles.todo}>
             {done.map((t, index) => (
-              <div key={index} className={styles.doing}>
+              <div
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("text/plain", t.id);
+                }}
+                key={index}
+                className={styles.doing}
+              >
                 <h3>{t.text}</h3>
                 <div className={styles.icons}>
                   <FaRegTrashAlt
