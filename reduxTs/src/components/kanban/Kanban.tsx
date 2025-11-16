@@ -7,6 +7,12 @@ import {
   deleteTicket,
   moveTicket,
 } from "../../features/todo/todoSlice";
+import {
+  selectTodo,
+  selectDoing,
+  selectDone,
+  selectCount,
+} from "../../features/todo/todoSelectors";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import type { Status } from "../../features/todo/todoSlice";
 import { useNavigate } from "react-router-dom";
@@ -14,12 +20,6 @@ import { FaRegCircleCheck } from "react-icons/fa6";
 import { MdOutlineEdit } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FiPlusCircle } from "react-icons/fi";
-import {
-  selectTodo,
-  selectDoing,
-  selectDone,
-  selectCount,
-} from "../../features/todo/todoSelectors";
 
 const Kanban = () => {
   const [inputValue, setInputValue] = useState("");
