@@ -7,7 +7,7 @@ import scrumReducer from "../features/scrum/scrumSlice";
 const persistConfig = {
   key: "root",
   storage,
-  blackList: ["todo"],
+  blackList: ["todo", "scrum"],
 };
 
 const rootReducer = combineReducers({

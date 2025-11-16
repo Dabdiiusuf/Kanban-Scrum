@@ -1,11 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-type Status = "todo" | "doing" | "review" | "done";
+export type Status = "todo" | "doing" | "review" | "done";
 
 type ScrumItem = {
   id: string;
   text: string;
-  newText?: string;
   status: Status;
 };
 
@@ -22,7 +21,7 @@ const initialState: ScrumState = {
 };
 
 export const getScrumTickets = createAsyncThunk("scrum/fetch", async () => {
-  const res = await fetch("/api/scrumTickets");
+  const res = await fetch("http://localhost:5000/api/scrumTodo");
   if (!res.ok) throw new Error("Failed to fetch scrum tickets");
   return res.json();
 });
@@ -30,9 +29,9 @@ export const getScrumTickets = createAsyncThunk("scrum/fetch", async () => {
 export const createScrumTicket = createAsyncThunk(
   "scrum/post",
   async (todo: Omit<ScrumItem, "id">) => {
-    const res = await fetch("/api/scrumTickets", {
+    const res = await fetch("http://localhost:5000/api/scrumTodo", {
       method: "POST",
-      headers: { "Content-Type": "application.json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(todo),
     });
     if (!res.ok) throw new Error("Failed to create ticket");
@@ -43,9 +42,9 @@ export const createScrumTicket = createAsyncThunk(
 export const updateScrumTicket = createAsyncThunk(
   "scrum/update",
   async (todo: ScrumItem) => {
-    const res = await fetch(`/api/scrumTickets/${todo.id}`, {
+    const res = await fetch(`http://localhost:5000/api/scrumTodo/${todo.id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application.json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(todo),
     });
     if (!res.ok) throw new Error("Failed to update ticket");
@@ -56,7 +55,7 @@ export const updateScrumTicket = createAsyncThunk(
 export const deleteScrumTicket = createAsyncThunk(
   "scrum/delete",
   async (id: string) => {
-    const res = await fetch(`/api/scrumTickets/${id}`, {
+    const res = await fetch(`http://localhost:5000/api/scrumTodo/${id}`, {
       method: "DELETE",
     });
     if (!res.ok) throw new Error("Failed to delete ticket");

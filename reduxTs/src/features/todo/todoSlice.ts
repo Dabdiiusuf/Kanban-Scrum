@@ -22,7 +22,7 @@ const initialState: TodoState = {
 };
 
 export const fetchTickets = createAsyncThunk("tickets/fetch", async () => {
-  const res = await fetch("/api/tickets");
+  const res = await fetch("http://localhost:5000/api/tickets");
   if (!res.ok) throw new Error("Failed to fetch tickets");
   return res.json();
 });
