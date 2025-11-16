@@ -1,5 +1,4 @@
-import { createAction, createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 type Status = "todo" | "doing" | "review" | "done";
 
@@ -12,71 +11,101 @@ type ScrumItem = {
 
 type ScrumState = {
   todos: ScrumItem[];
+  loading: boolean;
+  error: unknown | null;
 };
 
 const initialState: ScrumState = {
   todos: [],
+  loading: false,
+  error: null,
 };
 
-export const resetScrum = createAction("scrum/reset");
+export const getScrumTickets = createAsyncThunk("scrum/fetch", async () => {
+  const res = await fetch("/api/scrumTickets");
+  if (!res.ok) throw new Error("Failed to fetch scrum tickets");
+  return res.json();
+});
+
+export const createScrumTicket = createAsyncThunk(
+  "scrum/post",
+  async (todo: Omit<ScrumItem, "id">) => {
+    const res = await fetch("/api/scrumTickets", {
+      method: "POST",
+      headers: { "Content-Type": "application.json" },
+      body: JSON.stringify(todo),
+    });
+    if (!res.ok) throw new Error("Failed to create ticket");
+    return res.json();
+  }
+);
+
+export const updateScrumTicket = createAsyncThunk(
+  "scrum/update",
+  async (todo: ScrumItem) => {
+    const res = await fetch(`/api/scrumTickets/${todo.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application.json" },
+      body: JSON.stringify(todo),
+    });
+    if (!res.ok) throw new Error("Failed to update ticket");
+    return res.json();
+  }
+);
+
+export const deleteScrumTicket = createAsyncThunk(
+  "scrum/delete",
+  async (id: string) => {
+    const res = await fetch(`/api/scrumTickets/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) throw new Error("Failed to delete ticket");
+    return id;
+  }
+);
 
 const scrumSlice = createSlice({
   name: "scrum",
   initialState,
-  reducers: {
-    addTicket(state, action: PayloadAction<{ id: string; text: string }>) {
-      const { id, text } = action.payload;
-      state.todos.push({ id, text, status: "todo" });
-    },
-    moveTicket(state, action: PayloadAction<string>) {
-      const id = action.payload;
-      const todo = state.todos.find((t) => t.id === id);
-      if (todo && todo.status === "todo") {
-        todo.status = "doing";
-      } else if (todo && todo.status === "doing") {
-        todo.status = "review";
-      } else if (todo && todo.status === "review") {
-        todo.status = "done";
-      }
-    },
-    returnTicket(state, action: PayloadAction<string>) {
-      const id = action.payload;
-      const todo = state.todos.find((t) => t.id === id);
-      if (todo && todo.status === "doing") {
-        todo.status = "todo";
-      }
-      if (todo && todo.status === "review") {
-        todo.status = "doing";
-      }
-      if (todo && todo.status === "done") {
-        todo.status = "review";
-      }
-    },
-    deleteTicket(state, action: PayloadAction<string>) {
-      const id = action.payload;
-      state.todos = state.todos.filter((t) => t.id !== id);
-    },
-    updateTicket(
-      state,
-      action: PayloadAction<{ id: string; newText: string }>
-    ) {
-      const { id, newText } = action.payload;
-      const ticket = state.todos.find((t) => t.id === id);
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(getScrumTickets.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(getScrumTickets.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message ?? "Failed to fetch tickets";
+    });
+    builder.addCase(getScrumTickets.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.todos = action.payload;
+    });
+    builder.addCase(createScrumTicket.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.todos.push(action.payload);
+    });
+    builder.addCase(updateScrumTicket.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      const ticket = state.todos.find((t) => t.id === action.payload.id);
       if (ticket) {
-        ticket.text = newText;
+        ticket.text = action.payload.text;
+        ticket.status = action.payload.status;
       }
-    },
-  },
-  extraReducers(builder) {
-    builder.addCase(resetScrum, () => initialState);
+    });
+    builder.addCase(deleteScrumTicket.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.todos = state.todos.filter((t) => t.id !== action.payload);
+    });
   },
 });
 
-export const {
-  addTicket,
-  moveTicket,
-  returnTicket,
-  deleteTicket,
-  updateTicket,
-} = scrumSlice.actions;
+export const {} = scrumSlice.actions;
 export default scrumSlice.reducer;
+
+// export const resetScrum = createAction("scrum/reset");
+// builder.addCase(resetScrum, () => initialState);
