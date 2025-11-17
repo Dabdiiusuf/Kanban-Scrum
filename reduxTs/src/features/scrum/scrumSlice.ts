@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 export type Status = "todo" | "doing" | "review" | "done";
 
@@ -66,7 +67,19 @@ export const deleteScrumTicket = createAsyncThunk(
 const scrumSlice = createSlice({
   name: "scrum",
   initialState,
-  reducers: {},
+  reducers: {
+    moveTicket(state, action: PayloadAction<string>) {
+      const id = action.payload;
+      const ticket = state.todos.find((t) => t.id === id);
+      if (ticket && ticket.status === "todo") {
+        ticket.status = "doing";
+      } else if (ticket && ticket.status === "doing") {
+        ticket.status = "review";
+      } else if (ticket && ticket.status === "review") {
+        ticket.status = "done";
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getScrumTickets.pending, (state) => {
       state.loading = true;
@@ -103,7 +116,7 @@ const scrumSlice = createSlice({
   },
 });
 
-export const {} = scrumSlice.actions;
+export const { moveTicket } = scrumSlice.actions;
 export default scrumSlice.reducer;
 
 // export const resetScrum = createAction("scrum/reset");
