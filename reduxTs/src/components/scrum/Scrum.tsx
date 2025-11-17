@@ -13,14 +13,11 @@ import {
   createScrumTicket,
   updateScrumTicket,
   deleteScrumTicket,
-  moveTicket,
 } from "../../features/scrum/scrumSlice";
 import type { Status } from "../../features/scrum/scrumSlice";
-import { FiPlusCircle } from "react-icons/fi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { MdOutlineEdit } from "react-icons/md";
 import { FaRegCircleCheck } from "react-icons/fa6";
-// import { IoMdReturnLeft } from "react-icons/io";
 
 const Scrum = () => {
   const [inputValue, setInputValue] = useState("");
@@ -33,6 +30,7 @@ const Scrum = () => {
   const doing = useAppSelector(selectDoing);
   const review = useAppSelector(selectReview);
   const done = useAppSelector(selectDone);
+  const items = useAppSelector((state) => state.scrum.todos);
 
   const handleBoardChange = () => {
     navigate("/kanban");
@@ -75,7 +73,23 @@ const Scrum = () => {
         Kanban
       </button>
       <div className={styles.container}>
-        <div className={styles.col1}>
+        <div
+          className={styles.col1}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const id = e.dataTransfer.getData("text/plain");
+            const ticket = items.find((t) => t.id === id);
+            if (!ticket) return;
+            dispatch(
+              updateScrumTicket({
+                id: ticket.id,
+                text: ticket.text,
+                status: "todo",
+              })
+            );
+          }}
+        >
           <h1 className={styles.title}>Backlog</h1>
           <input
             type="text"
@@ -93,7 +107,14 @@ const Scrum = () => {
           </div>
           <div className={styles.todo}>
             {todo.map((t, index) => (
-              <div className={styles.doing} key={index}>
+              <div
+                className={styles.doing}
+                key={index}
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("text/plain", t.id);
+                }}
+              >
                 {t.id === editId ? (
                   <div className={styles.ticketWrapper}>
                     <input
@@ -118,10 +139,6 @@ const Scrum = () => {
                   <div className={styles.ticketWrapper}>
                     <h3>{t.text}</h3>
                     <div className={styles.icons}>
-                      <FiPlusCircle
-                        className={styles.icon}
-                        onClick={() => dispatch(moveTicket(t.id))}
-                      />
                       <MdOutlineEdit
                         className={styles.icon}
                         onClick={() => handleEdit(t.id, t.text)}
@@ -137,53 +154,162 @@ const Scrum = () => {
             ))}
           </div>
         </div>
-        <div className={styles.col2}>
+        <div
+          className={styles.col2}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const id = e.dataTransfer.getData("text/plain");
+            const ticket = items.find((t) => t.id === id);
+            if (!ticket) return;
+            dispatch(
+              updateScrumTicket({
+                id: ticket.id,
+                text: ticket.text,
+                status: "doing",
+              })
+            );
+          }}
+        >
           <h1 className={styles.title}>DOING</h1>
           <div className={styles.todo}>
             {doing.map((t, index) => (
-              <div className={styles.doing} key={index}>
-                <h3>{t.text}</h3>
-                <div className={styles.icons}>
-                  <FiPlusCircle
-                    className={styles.icon}
-                    onClick={() => dispatch(moveTicket(t.id))}
-                  />
-                  <MdOutlineEdit className={styles.icon} />
-                  <FaRegTrashAlt
-                    className={styles.icon}
-                    onClick={() => handleDelete(t.id)}
-                  />
-                </div>
+              <div
+                className={styles.doing}
+                key={index}
+                draggable
+                onDragStart={(e) => e.dataTransfer.setData("text/plain", t.id)}
+              >
+                {t.id === editId ? (
+                  <div className={styles.ticketWrapper}>
+                    <input
+                      type="text"
+                      className={styles.editInput}
+                      placeholder="Edit your to-do"
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                    />
+                    <div className={styles.icons}>
+                      <FaRegCircleCheck
+                        className={styles.icon}
+                        onClick={() => handleUpdate(t.id, t.status)}
+                      />
+                      <FaRegTrashAlt
+                        className={styles.icon}
+                        onClick={() => handleDelete(t.id)}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.ticketWrapper}>
+                    <h3>{t.text}</h3>
+                    <div className={styles.icons}>
+                      <MdOutlineEdit
+                        className={styles.icon}
+                        onClick={() => handleEdit(t.id, t.text)}
+                      />
+                      <FaRegTrashAlt
+                        className={styles.icon}
+                        onClick={() => handleDelete(t.id)}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
-        <div className={styles.col3}>
+        <div
+          className={styles.col3}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const id = e.dataTransfer.getData("text/plain");
+            const ticket = items.find((t) => t.id === id);
+            if (!ticket) return;
+            dispatch(
+              updateScrumTicket({
+                id: ticket.id,
+                text: ticket.text,
+                status: "review",
+              })
+            );
+          }}
+        >
           <h1 className={styles.title}>REVIEW</h1>
           <div className={styles.todo}>
             {review.map((t, index) => (
-              <div className={styles.doing} key={index}>
-                <h3>{t.text}</h3>
-                <div className={styles.icons}>
-                  <FiPlusCircle
-                    className={styles.icon}
-                    onClick={() => dispatch(moveTicket(t.id))}
-                  />
-                  <MdOutlineEdit className={styles.icon} />
-                  <FaRegTrashAlt
-                    className={styles.icon}
-                    onClick={() => handleDelete(t.id)}
-                  />
-                </div>
+              <div
+                className={styles.doing}
+                key={index}
+                draggable
+                onDragStart={(e) => e.dataTransfer.setData("text/plain", t.id)}
+              >
+                {t.id === editId ? (
+                  <div className={styles.ticketWrapper}>
+                    <input
+                      type="text"
+                      className={styles.editInput}
+                      placeholder="Edit your to-do"
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                    />
+                    <div className={styles.icons}>
+                      <FaRegCircleCheck
+                        className={styles.icon}
+                        onClick={() => handleUpdate(t.id, t.status)}
+                      />
+                      <FaRegTrashAlt
+                        className={styles.icon}
+                        onClick={() => handleDelete(t.id)}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.ticketWrapper}>
+                    <h3>{t.text}</h3>
+                    <div className={styles.icons}>
+                      <MdOutlineEdit
+                        className={styles.icon}
+                        onClick={() => handleEdit(t.id, t.text)}
+                      />
+                      <FaRegTrashAlt
+                        className={styles.icon}
+                        onClick={() => handleDelete(t.id)}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
-        <div className={styles.col4}>
+        <div
+          className={styles.col4}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const id = e.dataTransfer.getData("text/plain");
+            const ticket = items.find((t) => t.id === id);
+            if (!ticket) return;
+            dispatch(
+              updateScrumTicket({
+                id: ticket.id,
+                text: ticket.text,
+                status: "done",
+              })
+            );
+          }}
+        >
           <h1 className={styles.title}>DONE</h1>
           <div className={styles.todo}>
             {done.map((t, index) => (
-              <div className={styles.doing} key={index}>
+              <div
+                className={styles.doing}
+                key={index}
+                draggable
+                onDragStart={(e) => e.dataTransfer.setData("text/plain", t.id)}
+              >
                 <h3>{t.text}</h3>
                 <div className={styles.icons}>
                   <FaRegTrashAlt
