@@ -33,7 +33,7 @@
   justify-content: start;
   align-items: center;
   border-right: 1px solid rgb(60, 36, 60);
-  color: white;
+  color: rgb(0, 0, 0);
   padding-top: 20px;
 }
 
@@ -71,23 +71,33 @@
 .addInput {
   width: 80%;
   min-height: 35px;
-  border-radius: 12px;
+  border-radius: 4px;
   padding-left: 5px;
   outline: none;
   border: none;
   margin-top: 8px;
+  background-color: white;
 }
 
 .doing,
 .done {
   display: flex;
   justify-content: space-between;
-  background-color: rgb(115, 18, 115);
+  background-color: rgb(255, 255, 255);
   width: 90%;
+  min-height: 40px;
   padding: 10px 10px;
-  border-radius: 12px;
+  border-radius: 4px;
   align-items: center;
   margin-top: 8px;
+  cursor: grab;
+  transition-duration: 150ms;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+.doing:hover {
+  width: 91%;
+  height: 41px;
 }
 
 .icon {

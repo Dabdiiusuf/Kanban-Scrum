@@ -170,13 +170,15 @@ const Kanban = () => {
             const id = e.dataTransfer.getData("text/plain");
             const ticket = items.find((t) => t.id === id);
             if (!ticket) return;
-            dispatch(
-              updateTicket({
-                id: ticket.id,
-                text: ticket.text,
-                status: "doing",
-              })
-            );
+            if (count <= 2) {
+              dispatch(
+                updateTicket({
+                  id: ticket.id,
+                  text: ticket.text,
+                  status: "doing",
+                })
+              );
+            }
           }}
         >
           <h1 className={styles.title}>DOING {count}/3</h1>
